@@ -235,7 +235,8 @@ function showQuestion() {
     options.forEach(option => {
         const button = document.createElement('button');
         button.textContent = option;
-        button.addEventListener('click', () => selectAnswer(option === question.correctAnswer));
+        // ★★★ クリックされたボタン自身を渡すように変更 ★★★
+        button.addEventListener('click', (event) => selectAnswer(option === question.correctAnswer, event.target));
         optionsContainer.appendChild(button);
     });
     audioPlayer.src = question.songUrl;
@@ -250,30 +251,52 @@ function startTimer() {
         timeLeft -= 0.01;
         if (timeLeft <= 0) {
             timeLeft = 0;
-            selectAnswer(false);
+            selectAnswer(false, null); // 時間切れの時はボタンがないのでnull
         }
         timerEl.textContent = timeLeft.toFixed(2);
     }, 10);
 }
 
-function selectAnswer(isCorrect) {
+// ★★★ ここからが大きく変更される selectAnswer 関数 ★★★
+function selectAnswer(isCorrect, clickedButton) {
     clearInterval(timerInterval);
     if (!audioPlayer.paused) audioPlayer.pause();
-    Array.from(optionsContainer.children).forEach(btn => btn.disabled = true);
-    const timeLeft = parseFloat(timerEl.textContent);
+    
+    const question = currentQuestions[currentQuestionIndex];
+    const allButtons = optionsContainer.querySelectorAll('button');
+
+    // すべてのボタンを操作不能にする
+    allButtons.forEach(btn => {
+        btn.disabled = true;
+        // 正解のボタンを探してハイライトする
+        if (btn.textContent === question.correctAnswer) {
+            btn.classList.add('correct-answer');
+        }
+    });
+
     if (isCorrect) {
+        // 正解の場合の処理
         correctAnswersCount++;
+        const timeLeft = parseFloat(timerEl.textContent);
         const questionScore = 1000 + Math.floor(timeLeft * 100);
         score += questionScore;
         feedback.textContent = `正解！+${questionScore}点`;
         feedback.className = 'correct';
     } else {
+        // 不正解の場合の処理
         feedback.textContent = '不正解...';
         feedback.className = 'incorrect';
+        // もしボタンがクリックされて不正解だった場合、そのボタンを赤くする
+        if (clickedButton) {
+            clickedButton.classList.add('wrong-choice');
+        }
     }
+    
     currentQuestionIndex++;
-    setTimeout(showQuestion, 2000);
+    setTimeout(showQuestion, 2500); // 表示時間を少しだけ長くする
 }
+// ★★★ selectAnswer 関数の変更はここまで ★★★
+
 
 function showResults() {
     quizScreen.classList.add('hidden');
@@ -291,9 +314,6 @@ function showResults() {
     rankingForm.classList.remove('hidden');
     rankingDisplay.classList.add('hidden');
 }
-
-
-// --- ランキング機能の関数 ---
 
 function saveScoreAndShowRankings() {
     const playDate = new Date().toLocaleString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'});
