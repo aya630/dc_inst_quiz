@@ -44,15 +44,15 @@ button:hover {
 }
 
 #options-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid; /* ★ displayをflexからgridに変更 */
+    /* ★↓ この行を追加 */
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
     gap: 10px;
     margin: 20px 0;
 }
 
 #options-container button {
-    width: calc(50% - 5px);
+    /* ★ width: calc(50% - 5px); の行を削除 */
     background-color: #f0f2f5;
     color: #333;
     margin: 0;

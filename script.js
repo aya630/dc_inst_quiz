@@ -297,44 +297,61 @@ function selectAnswer(isCorrect, clickedButton) {
 }
 // ★★★ selectAnswer 関数の変更はここまで ★★★
 
-
 function showResults() {
     quizScreen.classList.add('hidden');
     resultScreen.classList.remove('hidden');
-    
-    const totalTime = ((Date.now() - quizStartTime) / 1000).toFixed(2);
-    const accuracy = (currentQuestions.length > 0 ? (correctAnswersCount / currentQuestions.length) * 100 : 0).toFixed(1);
 
+    const quizEndTime = Date.now();
+    const totalTime = (quizEndTime - quizStartTime) / 1000;
+    const accuracy = currentQuestions.length > 0 ? (correctAnswersCount / currentQuestions.length) * 100 : 0;
+
+    // HTML要素に結果を反映させる
     finalScoreEl.textContent = score;
     correctCountEl.textContent = correctAnswersCount;
     totalCountEl.textContent = currentQuestions.length;
-    accuracyEl.textContent = accuracy;
-    totalTimeEl.textContent = totalTime;
-    
+    accuracyEl.textContent = accuracy.toFixed(1);
+    totalTimeEl.textContent = totalTime.toFixed(2);
+
+    // スコアを保存するボタンを表示する
     rankingForm.classList.remove('hidden');
-    rankingDisplay.classList.add('hidden');
 }
 
 function saveScoreAndShowRankings() {
-    const playDate = new Date().toLocaleString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'});
+    const quizEndTime = Date.now();
+    const totalTime = (quizEndTime - quizStartTime) / 1000;
+    const accuracy = currentQuestions.length > 0 ? (correctAnswersCount / currentQuestions.length) * 100 : 0;
 
+    const now = new Date();
+    
+    // ▼▼▼ この部分を変更 ▼▼▼
+    const hours = String(now.getHours()).padStart(2, '0'); // 時間を取得
+    const minutes = String(now.getMinutes()).padStart(2, '0'); // 分を取得
+    const dateString = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')} ${hours}:${minutes}`;
+    // ▲▲▲ 変更ここまで ▲▲▲
+
+    // 保存する記録（レコード）を作成
     const newRecord = {
-        date: playDate,
         score: score,
-        accuracy: parseFloat(accuracyEl.textContent),
-        time: parseFloat(totalTimeEl.textContent),
+        date: dateString,
+        accuracy: accuracy,
+        time: totalTime
     };
+
 
     let rankings = JSON.parse(localStorage.getItem('quizRankings')) || [];
     rankings.push(newRecord);
+
+    // スコアの高い順にランキングを並び替え
     rankings.sort((a, b) => b.score - a.score);
+
+    // ランキングを上位10件までに制限（この数字は自由に変更できます）
     rankings = rankings.slice(0, 10);
+
     localStorage.setItem('quizRankings', JSON.stringify(rankings));
 
     renderRankingTable(rankings);
 
     rankingForm.classList.add('hidden');
-    rankingDisplay.classList.remove('hidden');
 }
 
 function renderRankingTable(rankings) {
@@ -370,3 +387,25 @@ function clearRankings() {
 
 // ページ読み込み時に総問題数を表示する
 totalQuestionCountEl.textContent = questions.length;
+// ... (既存のコードはすべてこの上にあります) ...
+
+// ページ読み込み時に総問題数を表示する
+totalQuestionCountEl.textContent = questions.length;
+
+
+// ▼▼▼ 以下の新しいコードを末尾に追加 ▼▼▼
+
+// ページ読み込み時にランキングを初期表示する関数
+function showInitialRankings() {
+    const rankings = JSON.parse(localStorage.getItem('quizRankings')) || [];
+    renderRankingTable(rankings);
+    // 最初からランキングを表示させておく
+    if (rankingDisplay) { //念のため要素の存在をチェック
+        rankingDisplay.classList.remove('hidden'); 
+    }
+}
+
+// ページのHTMLがすべて読み込まれたらランキングを表示する
+document.addEventListener('DOMContentLoaded', showInitialRankings);
+
+// ▲▲▲ コードの追加はここまで ▲▲▲
