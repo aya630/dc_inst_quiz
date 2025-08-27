@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>コナンEDクイズ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body id="conan-ed-quiz">
+
+    <div id="main-container">
+        <h1>コナンEDクイズ</h1>
+        
+        <div id="start-screen">
+            <div class="quiz-description">
+                <h3>注意</h3>
+                <p>
+                    このクイズは、「時計仕掛けの摩天楼」から「隻眼の残像」の範囲で出題されます。（ｖｓルパンは除く）
+                    映画で実際使われた音源とは異なる場合があります。
+                    音量にお気を付けください。
+                    問題は全部で <span id="total-question-count"></span> 問です。
+                    あなたの知識を試してみましょう！
+                </p>
+            </div>
+            <div id="mode-select-buttons">
+                <button id="start-normal-btn">通常モードで開始</button>
+                <button id="start-easy-btn">Easyモードで開始</button>
+            </div>
+            <button id="mypage-btn">マイページ</button>
+        </div>
+
+        <div id="quiz-screen" class="hidden">
+            <p id="question-counter"></p>
+            <p>タイトルは何でしょう？</p>
+            <p id="timer-display">Time: <span id="timer">30.00</span></p>
+            <audio id="audio-player"></audio>
+            <div id="options-container"></div>
+            <div id="feedback"></div>
+        </div>
+
+        <div id="result-screen" class="hidden">
+            <h2>結果発表</h2>
+            <p>あなたのスコア: <strong id="final-score">0</strong></p>
+            <p>
+                正解数: <span id="correct-count">0</span> / <span id="total-count">0</span>
+                (<span id="accuracy">0</span>%)
+            </p>
+            <p>合計タイム: <span id="total-time">0.00</span>秒</p>
+            
+            <hr>
+
+            <div id="ranking-form">
+                <button id="save-score-btn">スコアを記録する</button>
+            </div>
+            
+            <button id="restart-btn">もう一度挑戦</button>
+        </div>
+
+        <div id="ranking-display" class="hidden">
+            <h3>ハイスコアランキング</h3>
+            <table id="ranking-table">
+                <thead>
+                    <tr>
+                        <th>順位</th>
+                        <th>プレイ日時</th>
+                        <th>モード</th>
+                        <th>スコア</th>
+                        <th>正答率</th>
+                        <th>タイム</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <button id="clear-rankings-btn">ランキングをリセット</button>
+        </div>
+
+        <div id="mypage-screen" class="hidden">
+            <div id="stats-display">
+                <h3>モード別・問題別 正答率</h3>
+                <table id="stats-table">
+                    <thead>
+                        <tr>
+                            <th>問題タイトル</th>
+                            <th>通常モード</th>
+                            <th>Easyモード</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <button id="back-to-start-btn">戻る</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
