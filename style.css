@@ -151,13 +151,13 @@ button:hover {
     margin-bottom: 0;
 }
 
-#clear-rankings-btn {
+#clear-rankings-btn, #clear-stats-btn {
     background-color: #ea4335;
     font-size: 14px;
     padding: 8px 16px;
 }
 
-#clear-rankings-btn:hover {
+#clear-rankings-btn:hover, #clear-stats-btn:hover {
     background-color: #c5372c;
 }
 
