@@ -350,3 +350,21 @@ body.dark-mode #external-link-btn {
 body.dark-mode #external-link-btn:hover {
     background-color: #26c6da;
 }
+
+/* ↓ここから下が、スマートフォン専用の特別な魔法ですわ↓ */
+@media (max-width: 600px) {
+    #options-container {
+        /* 画面が狭い時は、画面幅を等分して強制的に「2列」に並べますわ！ */
+        grid-template-columns: repeat(2, 1fr); 
+        
+        /* ボタン同士の隙間も少しだけ狭くして、画面を広く使いますわ */
+        gap: 6px; 
+    }
+    
+    #main-container {
+        /* 白い箱（メインコンテナ）の内側の余白も少し減らして、 */
+        /* 画像をできるだけ大きく、押しやすくいたしますわ */
+        padding: 1rem 1rem; 
+        width: 95%;
+    }
+}
